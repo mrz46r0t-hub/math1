@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Уровень 2: Геометрический шифр</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif; background: linear-gradient(135px, #1e293b 0%, #0f172a 100%);
+            color: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px;
+        }
+        .container {
+            background-color: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); max-width: 650px; width: 100%;
+        }
+        h1 { color: #e67e22; text-align: center; margin-top: 0; font-size: 28px; }
+        .instruction { font-style: italic; color: #94a3b8; margin-bottom: 30px; text-align: center; line-height: 1.6; font-size: 15px; }
+        .puzzle-container {
+            display: flex; justify-content: space-around; align-items: flex-end; flex-wrap: wrap; gap: 20px;
+            background-color: rgba(15, 23, 42, 0.6); padding: 30px 20px; border-radius: 12px; margin-bottom: 30px;
+        }
+        .figure-box { display: flex; flex-direction: column; align-items: center; width: 130px; }
+        .triangle {
+            width: 0; height: 0; border-left: 45px solid transparent; border-right: 45px solid transparent;
+            border-bottom: 78px solid #3498db; position: relative; margin-bottom: 15px;
+        }
+        .triangle .inner-number { position: absolute; top: 40px; left: -10px; color: white; font-weight: bold; font-size: 18px; width: 20px; text-align: center; }
+        .square {
+            width: 80px; height: 80px; background-color: #e67e22; position: relative; margin-bottom: 15px;
+            display: flex; justify-content: center; align-items: center; border-radius: 4px;
+        }
+        .square .inner-number { color: white; font-weight: bold; font-size: 20px; }
+        .pentagon {
+            position: relative; width: 80px; box-sizing: content-box; border-width: 40px 20px 0; border-style: solid;
+            border-color: #9b59b6 transparent; margin-bottom: 15px; margin-top: 30px; display: flex; justify-content: center;
+        }
+        .pentagon:before {
+            content: ""; position: absolute; top: -65px; left: -20px; width: 0; height: 0;
+            border-width: 0 40px 25px; border-style: solid; border-color: transparent transparent #9b59b6;
+        }
+        .pentagon .inner-number { position: absolute; top: -25px; color: white; font-weight: bold; font-size: 22px; }
+        .bottom-numbers { font-size: 16px; font-weight: bold; color: #cbd5e1; word-spacing: 15px; }
+        .input-group { display: flex; flex-direction: column; gap: 15px; }
+        input[type="text"] {
+            padding: 14px; background-color: rgba(15, 23, 42, 0.8); border: 2px solid #334155; border-radius: 8px;
+            font-size: 16px; color: #fff; outline: none; text-align: center; transition: all 0.3s ease;
+        }
+        input[type="text"]:focus { border-color: #e67e22; box-shadow: 0 0 8px rgba(230, 126, 34, 0.4); }
+        button { padding: 14px; background-color: #e67e22; color: #fff; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; transition: all 0.2s ease; }
+        button:hover { background-color: #d35400; transform: translateY(-1px); }
+        .result-box { display: none; margin-top: 20px; padding: 25px; background: linear-gradient(135px, #22c55e 0%, #16a34a 100%); color: white; border-radius: 12px; text-align: center; }
+        .result-box a { color: #fef08a; font-weight: bold; text-decoration: underline; font-size: 18px; }
+        .error-message { display: none; color: #f87171; margin-top: 15px; text-align: center; font-weight: bold; font-size: 14px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Уровень 2: Геометрический шифр</h1>
+    <p class="instruction">Разгадайте логическую связь между числами у оснований и внутри геометрических фигур.</p>
+    <div class="puzzle-container">
+        <div class="figure-box"><div class="triangle"><div class="inner-number">15</div></div><div class="bottom-numbers">2 &nbsp; 3</div></div>
+        <div class="figure-box"><div class="square"><div class="inner-number">20</div></div><div class="bottom-numbers">1 &nbsp; 4</div></div>
+        <div class="figure-box"><div class="pentagon"><div class="inner-number">?</div></div><div class="bottom-numbers">3 &nbsp; 5</div></div>
+    </div>
+    <div class="input-group">
+        <input type="text" id="answerInput" placeholder="Введите пропущенное число">
+        <button onclick="checkAnswer()">Проверить ключ</button>
+    </div>
+    <div id="errorMessage" class="error-message">Неверно. Учтите количество углов каждой из фигур!</div>
+    <div id="resultBox" class="result-box">
+        <h3>🎉 Закономерность раскрыта!</h3>
+        <p>Ваш второй фрагмент пазла: <strong style="font-size: 20px;">ПРИНТЕРОМ</strong></p>
+        <p style="margin-top: 15px;"><a href="#" id="nextLevelLink">Перейти к Уровню 3</a></p>
+    </div>
+</div>
+<script>
+    function checkAnswer() {
+        const userAnswer = document.getElementById('answerInput').value.trim();
+        const resultBox = document.getElementById('resultBox');
+        const errorMessage = document.getElementById('errorMessage');
+        if (userAnswer === '40') {
+            resultBox.style.display = 'block'; errorMessage.style.none = 'none';
+            const currentUrl = window.location.href;
+            document.getElementById('nextLevelLink').href = currentUrl.replace('level2.html', '') + 'level3.html';
+        } else { errorMessage.style.display = 'block'; resultBox.style.display = 'none'; }
+    }
+</script>
+</body>
+</html>
